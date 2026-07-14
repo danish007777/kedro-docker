@@ -83,11 +83,6 @@ This project demonstrates how to containerize Kedro-based data science projects 
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to fork this repository, submit pull requests, or open issues for improvements.
-
----
 
 ## 📖 Project Highlights
 
