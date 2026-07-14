@@ -1,0 +1,72 @@
+version: 2
+jobs:
+  build_35: &DEFAULT
+    machine:
+      # Don't use 2018 image: https://discuss.circleci.com/t/24639/18
+      image: circleci/classic:201711-01
+      docker_layer_caching: true
+    environment:
+      CONDA_ENV_PY_VERSION: 3.5
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            # Get rid of pyenv stuff
+            sudo rm -rf .pyenv/ /opt/circleci/.pyenv/
+
+            # Download and install miniconda
+            curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh  > miniconda.sh
+            bash miniconda.sh -b -p $HOME/miniconda
+
+            # Create an anaconda virtualenv for python ${CONDA_ENV_PY_VERSION} and make that the default python interpreter
+            echo ". /home/circleci/miniconda/etc/profile.d/conda.sh" >> $BASH_ENV
+            echo "conda deactivate; conda activate kedro-docker" >> $BASH_ENV
+            . /home/circleci/miniconda/etc/profile.d/conda.sh
+            conda create --name kedro-docker python=${CONDA_ENV_PY_VERSION} -y
+            source $BASH_ENV
+      - run:
+          name: Pip install dependencies
+          command: |
+            make install-pip-setuptools
+            pip install "kedro>=0.dev0"
+            pip install -r requirements.txt -U
+            pip install -r test_requirements.txt -U
+      - run:
+          name: Echo package versions
+          command: |
+            python -V
+            pip -V
+            kedro -V
+      - run:
+          name: Run pylint and flake8
+          command: |
+            make lint
+      - run:
+          name: Run tests
+          command: |
+            make test
+      - run:
+          name: Run all end to end tests
+          command: |
+            make e2e-tests
+      - run:
+          name: Check for legal compliance
+          command: |
+            make legal
+  build_36:
+    <<: *DEFAULT
+    environment:
+      CONDA_ENV_PY_VERSION: 3.6
+  build_37:
+    <<: *DEFAULT
+    environment:
+      CONDA_ENV_PY_VERSION: 3.7
+
+workflows:
+  version: 2
+  regular:
+    jobs:
+      - build_35
+      - build_36
+      - build_37
