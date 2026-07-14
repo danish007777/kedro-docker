@@ -89,21 +89,15 @@ Contributions are welcome! Feel free to fork this repository, submit pull reques
 
 ---
 
-## 📄 License
+## 📖 Project Highlights
 
-This project follows the license provided by the original repository.
-
----
-
-## 🙏 Acknowledgements
-
-This repository is based on the open-source **kedro-docker** project by **suntistlabs**.
-
-Original Repository:
-https://github.com/suntistlabs/kedro-docker
+- Dockerized development environment for Kedro projects
+- Reproducible and portable workflow
+- Well-structured project organization
+- Easy dependency management
+- Suitable for data science and MLOps workflows
 
 ---
-
 ## 👨‍💻 Author
 
 **Danish Shaikh**
